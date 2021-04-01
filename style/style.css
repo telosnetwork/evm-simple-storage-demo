@@ -40,10 +40,11 @@ ol {
 .rounded-list li:before{
   content: counter(li);
   counter-increment: li;
-  position: absolute;
-  left: -0.5em;
-  top: 21%;
-  margin-top: -1.3em;
+  position: relative;
+  display: block;
+  left: -2.3em;
+  float: left;
+  margin-top: -0.6em;
   background: #87ceeb;
   height: 2.3em;
   width: 2.3em;
@@ -57,4 +58,9 @@ ol {
 
 .interaction-with-contract {
   margin: 1em 0 0 1em;
+}
+
+.function-description {
+  position: relative;
+  left: -1.4em;
 }
