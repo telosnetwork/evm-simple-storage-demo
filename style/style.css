@@ -1,0 +1,60 @@
+#number-input {
+  margin: 0;
+  padding: 7px;
+}
+
+#set-new-value-form button[type="submit"] {
+  position: relative;
+  top: 3.5px;
+  display:inline-block;
+}
+
+h3 {
+  position: relative;
+  left: -.3em;
+}
+
+ol {
+  counter-reset: li;
+  font: 19px 'trebuchet MS', 'lucida sans';
+  list-style: none;
+  padding: 0;
+  margin-bottom: 4em;
+}
+
+.rounded-list li{
+  position: relative;
+  display: block;
+  padding: .4em .4em .4em 2em;
+  margin: 1em 0;
+  color: #444;
+  text-decoration: none;
+  border-radius: .3em;
+  transition: all .3s ease-out;
+}
+
+.rounded-list li:hover:before{
+  transform: rotate(360deg);
+}
+
+.rounded-list li:before{
+  content: counter(li);
+  counter-increment: li;
+  position: absolute;
+  left: -0.5em;
+  top: 21%;
+  margin-top: -1.3em;
+  background: #87ceeb;
+  height: 2.3em;
+  width: 2.3em;
+  line-height: 1.7em;
+  border: .3em solid #fff;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 2em;
+  transition: all .3s ease-out;
+}
+
+.interaction-with-contract {
+  margin: 1em 0 0 1em;
+}
