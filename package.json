@@ -8,8 +8,7 @@
     "server": "http-server",
     "watch": "webpack --watch --mode=development --config webpack.config.js",
     "build": "webpack --mode=production --progress --config webpack.config.js",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "author": "",
   "license": "ISC",
