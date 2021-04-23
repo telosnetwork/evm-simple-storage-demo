@@ -23,6 +23,7 @@ const EthereumTx = require('ethereumjs-tx');
   const setNewValueForm = $('#set-new-value-form');
   const getValueBtn = $('#get-value');
   const setValueBtn = $('#set-new-value-form button');
+  const keycatBtn = $('#keycat');
   const telosTestnetChainId = 41;
   const appName = 'Simple storage';
   const telosTestnetUrl = "https://testnet.telos.caleos.io";
@@ -83,6 +84,10 @@ const EthereumTx = require('ethereumjs-tx');
     }]
   };
   const txConf = {broadcast: true, blocksBehind: 3, expireSeconds: 30};
+
+  if (navigator.userAgent.indexOf("Firefox") !== -1) {
+    $(keycatBtn).remove();
+  }
 
   function getContract() {
     const web3 = new Web3(new Web3.providers.HttpProvider(telosTestnetProviderUrl));
@@ -157,7 +162,7 @@ const EthereumTx = require('ethereumjs-tx');
       "to": simpleStorageContractAddress,
       "data": getFunctionSignature('set(uint256)') + Number(newValue).toString(16).padStart(64, "0"),
       "gasPrice": 222000000000,
-      "gas": 500000,
+      "gas": 5000000,
       "value": 0
     }
   }
@@ -190,6 +195,11 @@ const EthereumTx = require('ethereumjs-tx');
   async function setWeb3Provider(provider){
     await provider.enable();
     web3 = new Web3(provider);
+    provider.on("chainChanged", (chainId) => {
+      if (chainId !== "0x" + (telosTestnetChainId).toString(16)) {
+        showMsg('Your chain id = ' + chainId + '. Please, change the network to Telos Testnet.', true);
+      }
+    });
   }
 
   $("#metamask").on('click', function (e){
@@ -206,20 +216,22 @@ const EthereumTx = require('ethereumjs-tx');
     $("#close-modal").click();
     const provider = new WalletConnectProvider({
       rpc: {
-        41: "https://testnet.telos.net/evm/"
+        [telosTestnetChainId]: telosTestnetProviderUrl
       }
     });
     setWeb3Provider(provider).then();
     walletService = "walletConnect";
   })
 
-  $("#keycat").on('click', async function (e) {
+  $(keycatBtn).on('click', async function (e) {
     try {
       ({ accountName, permission, publicKey } = await keycat.signin());
       $("#close-modal").click();
       walletService = "keycat";
     } catch (error) {
-      showMsg(error.message, true);
+      if (error !== "closed") {
+        showMsg(error.message, true);
+      }
     }
   })
 
@@ -253,7 +265,9 @@ const EthereumTx = require('ethereumjs-tx');
         }
       }
     } catch (error) {
-      showMsg(error.message + ". Perhaps, the sender's balance is too low to pay for gas.", true);
+      if (error !== "closed" ) {
+        showMsg(error.message + ". Perhaps, the sender's balance is too low to pay for gas.", true);
+      }
     }
   }
 
@@ -318,10 +332,12 @@ const EthereumTx = require('ethereumjs-tx');
 
     const provider = new WalletConnectProvider({
       rpc: {
-        41: "https://testnet.telos.net/evm/"
+        [telosTestnetChainId]: telosTestnetProviderUrl
       }
     });
-    provider.disconnect().then();
+    if (provider.wc.accounts.length > 0) {
+      provider.disconnect().then();
+    }
   }
 
   initWallets();
