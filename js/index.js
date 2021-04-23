@@ -161,7 +161,7 @@ const EthereumTx = require('ethereumjs-tx');
       "from": from_address,
       "to": simpleStorageContractAddress,
       "data": getFunctionSignature('set(uint256)') + Number(newValue).toString(16).padStart(64, "0"),
-      "gasPrice": 222000000000,
+      "gasPrice": 22200000000000,
       "gas": 5000000,
       "value": 0
     }
