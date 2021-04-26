@@ -9,6 +9,7 @@ import { Keycat } from 'keycatjs';
 import Web3EthAbi from 'web3-eth-abi';
 import { UALJs } from 'ual-plainjs-renderer';
 import { Scatter } from 'ual-scatter';
+import { Anchor } from 'ual-anchor';
 const EthereumTx = require('ethereumjs-tx');
 
 
@@ -315,17 +316,26 @@ const EthereumTx = require('ethereumjs-tx');
 
   function initWallets(){
     const scatter = new Scatter([telosTestnetChain], {appName: appName});
+    const anchor = new Anchor([telosTestnetChain], {appName: appName});
     const ual = new UALJs(
       async arrayOfUsers => {
+        const ualActiveAuthenticator = ual.activeAuthenticator.getName();
+        if (ualActiveAuthenticator === "anchor") {
+          ual.logoutUser();
+        }
         loggedInUser = arrayOfUsers[0];
         accountName = await loggedInUser.getAccountName();
-        permission = loggedInUser.scatter.identity.accounts[0].authority;
+        if (ualActiveAuthenticator === "Scatter") {
+          permission = loggedInUser.scatter.identity.accounts[0].authority;
+        } else if (ualActiveAuthenticator === "anchor") {
+          permission = loggedInUser.requestPermission;
+        }
         walletService = "ual";
         $("#close-modal").click();
       },
       [telosTestnetChain],
       appName,
-      [scatter],
+      [scatter, anchor],
       {containerElement: $('#ual')[0]}
     );
     ual.init();
