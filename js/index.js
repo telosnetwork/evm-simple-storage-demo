@@ -316,14 +316,15 @@ const EthereumTx = require('ethereumjs-tx');
 
   function initWallets(){
     const scatter = new Scatter([telosTestnetChain], {appName: appName});
-    const anchor = new Anchor([telosTestnetChain], {
-       appName: appName
-    });
+    const anchor = new Anchor([telosTestnetChain], {appName: appName});
     const ual = new UALJs(
       async arrayOfUsers => {
+        const ualActiveAuthenticator = ual.activeAuthenticator.getName();
+        if (ualActiveAuthenticator === "anchor") {
+          ual.logoutUser();
+        }
         loggedInUser = arrayOfUsers[0];
         accountName = await loggedInUser.getAccountName();
-        const ualActiveAuthenticator = ual.activeAuthenticator.getName();
         if (ualActiveAuthenticator === "Scatter") {
           permission = loggedInUser.scatter.identity.accounts[0].authority;
         } else if (ualActiveAuthenticator === "anchor") {
